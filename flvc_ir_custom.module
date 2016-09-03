@@ -1,0 +1,120 @@
+<?php
+
+/**
+ * @file
+ * Implementation of FLVC IR customizations.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function flvc_ir_custom_menu() {
+  $items = array();
+
+  $items['flvc_ir_get_parent_organizations/%islandora_object/datastream/MODS'] = array (
+    'page callback' => 'flvc_ir_custom_get_parent_organizations',
+    'page arguments' => array(1, 'MODS'),
+    'file' => 'includes/utilities.inc',
+    'access callback' => TRUE,
+  );
+
+  $items['flvc_ir_get_parent_organizations/%islandora_object/datastream/MADS'] = array (
+    'page callback' => 'flvc_ir_custom_get_parent_organizations',
+    'page arguments' => array(1, 'MADS'),
+    'file' => 'includes/utilities.inc',
+    'access callback' => TRUE,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function flvc_ir_custom_block_info() {
+  return array(
+    'flvc_ir_custom_organization_tree' => array(
+      'info' => t('FLVC IR Organization Tree View'),
+      'cache' => DRUPAL_NO_CACHE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function flvc_ir_custom_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'flvc_ir_custom_organization_tree':
+      module_load_include('inc', 'flvc_ir_custom', 'includes/utilities');
+      if (strpos(current_path(), 'islandora/object') === 0) {
+        $object = menu_get_object('islandora_object', 2);
+        if ($object) {
+          if (!in_array('islandora:organizationCModel', $object->models)) {
+            break;
+          }
+          $block['subject'] = t('FLVC IR Organization Tree View');
+          $block['content'] = flvc_ir_custom_get_solr_tree_view($object, 'MADS_parent_institution_ms', 'MADS_department_ms');
+          break;
+        }
+      }
+    case 'flvc_ir_custom_collection_tree':
+      module_load_include('inc', 'flvc_ir_custom', 'includes/utilities');
+      if (strpos(current_path(), 'islandora/object') === 0) {
+        $object = menu_get_object('islandora_object', 2);
+        if ($object) {
+          if (!in_array('islandora:collectionCModel', $object->models)) {
+            break;
+          }
+          $block['subject'] = t('FLVC IR Collection Tree View');
+          $block['content'] = flvc_ir_custom_get_solr_tree_view($object, 'RELS_EXT_isMemberOfCollection_uri_ms', 'fgs_label_s');
+          break;
+        }
+      }
+  }
+  return $block;
+}
+
+/**
+ * Implements hook_preprocess().
+ *
+ * We want to add the mads identifier[@type=u1] and affilation/organization values to the variables array when viewing a personCModel object.
+ */
+function flvc_ir_custom_preprocess_islandora_person(array &$variables) {
+  drupal_add_css(drupal_get_path('theme', 'islandoratheme') . '/css/person.css', array('group' => CSS_THEME, 'type' => 'file'));
+
+  $object = empty($variables['object']) ? NULL : $variables['object'];
+  $u2 = $u1 = '';
+  if (empty($object)) {
+    return;
+  }
+  module_load_include('inc', 'flvc_ir_custom', 'includes/utilities');
+  try {
+    $u1 = flvc_ir_custom_get_u1($object, 'MADS');
+    $u2 = flvc_ir_custom_get_u2($object);
+  }
+  catch (Exception $e) {
+    watchdog_exception('FLVC IR Customizations', $e, 'Error retrieving u identifier from MADS datastream.', array(), WATCHDOG_ERROR);
+  }
+  $variables['u1'] = $u1;
+  $variables['u2'] = $u2;
+}
+
+/**
+ * Implements hook_preprocess().
+ */
+function flvc_ir_custom_preprocess_islandora_dept(array &$variables) {
+  module_load_include('inc', 'flvc_ir_custom', 'includes/utilities');
+  drupal_add_css(drupal_get_path('theme', 'islandoratheme') . '/css/organization.css', array('group' => CSS_THEME, 'type' => 'file'));
+  $object = empty($variables['object']) ? NULL : $variables['object'];
+  $parent_org = '';
+  $parent_org = flvc_ir_custom_get_parent_organization($object);
+  if (!empty($parent_org)) {
+    $variables['parent_organization'] = $parent_org;
+  }
+
+  $tree_block = flvc_ir_custom_block_view('flvc_ir_custom_organization_tree');
+  $variables['organization_tree'] = drupal_render($tree_block['content']);
+  drupal_set_message(drupal_render($tree_block['content']));
+}

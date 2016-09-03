@@ -1,0 +1,6 @@
+name = FLVC IR customizations
+description = Implements FLVC institutional repository customizations
+package = FLVC Islandora
+dependencies[] = islandora_scholar
+dependencies[] = islandora_entities
+core = 7.x
