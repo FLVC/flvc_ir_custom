@@ -262,8 +262,10 @@ function flvc_ir_custom_get_organizations_for_person($identifier, &$orglist) {
   // foreach organization, add to array
   if ((isset($solr_results['response']['objects']))&&($solr_results['response']['numFound'] > 0)) {
     foreach ($solr_results['response']['objects'] as $object_response) {
-      $orglist[] = $object_response['solr_doc']['MADS_organization_ms'][0];
-      flvc_ir_custom_get_parent_organizations_for_org($object_response['solr_doc']['MADS_organization_ms'][0], $orglist);
+      foreach ($object_response['solr_doc']['MADS_organization_ms'] as $organization) {
+        $orglist[] = $organization;
+        flvc_ir_custom_get_parent_organizations_for_org($organization, $orglist);
+      }
     }
   }
 }
@@ -308,7 +310,13 @@ function flvc_ir_custom_get_parent_organizations(FedoraObject $object, $datastre
     $xpath = new DOMXPath($doc);
     $namespace = 'http://www.loc.gov/mads/v2';
     $xpath->registerNamespace('ns', $namespace);
-    $results = $xpath->query('//ns:affiliation/ns:organization[normalize-space(text())]');
+    $results = array();
+    if (in_array('islandora:personCModel', $object->models)) {
+      $results = $xpath->query('//ns:affiliation/ns:organization[normalize-space(text())]');
+    }
+    else if (in_array('islandora:organizationCModel', $object->models)) {
+      $results = $xpath->query('//ns:related[@type="parentOrg"]/ns:name/ns:namePart[normalize-space(text())]');
+    }
     if ($results->length > 0) {
       foreach($results as $result){
         $orglist[] = $result->textContent;
@@ -318,7 +326,8 @@ function flvc_ir_custom_get_parent_organizations(FedoraObject $object, $datastre
   }
 
   $output = '<sparql xmlns="http://www.w3.org/2001/sw/DataAccess/rf1/result"><results>';
-  foreach ($orglist as $org) {
+  $orglist_dedup = array_unique($orglist);
+  foreach ($orglist_dedup as $org) {
     if (!empty($org)) {
       $output .= '<result><organization>' . $org . '</organization></result>';
     }

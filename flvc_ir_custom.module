@@ -11,6 +11,15 @@
 function flvc_ir_custom_menu() {
   $items = array();
 
+  $items['admin/islandora/tools/flvc_ir_custom'] = array(
+    'title' => 'FLVC Institutional Repository Custom Settings',
+    'description' => 'Settings for FLVC Institutional Repository.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('flvc_ir_custom_admin_form'),
+    'access arguments' => array(ISLANDORA_ENTITIES_ADMINISTER_PERMISSION),
+    'file' => 'includes/admin.form.inc',
+  );
+
   $items['flvc_ir_get_parent_organizations/%islandora_object/datastream/MODS'] = array (
     'page callback' => 'flvc_ir_custom_get_parent_organizations',
     'page arguments' => array(1, 'MODS'),
@@ -24,8 +33,25 @@ function flvc_ir_custom_menu() {
     'file' => 'includes/utilities.inc',
     'access callback' => TRUE,
   );
-
+/*
+  $items['dept_tree'] = array (
+    'page callback' => 'flvc_ir_custom_display_full_organization_tree',
+    'page arguments' => array(),
+    'file' => 'includes/utilities.inc',
+    'access callback' => TRUE,
+  );
+*/
   return $items;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function flvc_ir_custom_views_api($module = NULL, $api = NULL) {
+  return array(
+    "api" => '3.0',
+    'path' => drupal_get_path('module', 'flvc_ir_custom') . '/views',
+  );
 }
 
 /**
@@ -50,6 +76,12 @@ function flvc_ir_custom_block_view($delta = '') {
       module_load_include('inc', 'flvc_ir_custom', 'includes/utilities');
       if (strpos(current_path(), 'islandora/object') === 0) {
         $object = menu_get_object('islandora_object', 2);
+      }
+      else {
+        module_load_include('inc', 'islandora', 'includes/utilities');
+        $root_pid = variable_get('flvc_ir_custom_root_organization_pid', '');
+        $object = islandora_object_load($root_pid);
+      }
         if ($object) {
           if (!in_array('islandora:organizationCModel', $object->models)) {
             break;
@@ -58,7 +90,7 @@ function flvc_ir_custom_block_view($delta = '') {
           $block['content'] = flvc_ir_custom_get_solr_tree_view($object, 'MADS_parent_institution_ms', 'MADS_department_ms');
           break;
         }
-      }
+      //}
     case 'flvc_ir_custom_collection_tree':
       module_load_include('inc', 'flvc_ir_custom', 'includes/utilities');
       if (strpos(current_path(), 'islandora/object') === 0) {
@@ -116,5 +148,4 @@ function flvc_ir_custom_preprocess_islandora_dept(array &$variables) {
 
   $tree_block = flvc_ir_custom_block_view('flvc_ir_custom_organization_tree');
   $variables['organization_tree'] = drupal_render($tree_block['content']);
-  drupal_set_message(drupal_render($tree_block['content']));
 }
