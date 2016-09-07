@@ -132,11 +132,11 @@ function flvc_ir_custom_get_children_for_tree($parentvalue, $searchfield, $displ
       $pid = $object_response['solr_doc']['PID'];
       $dept = $object_response['solr_doc'][$displayfield][0];
       $tree_entry = array();
-      $tree_entry['id'] = $dept;
+      $tree_entry['id'] = htmlentities($dept, ENT_QUOTES);
       $tree_entry['pid'] = $pid;
       $tree_entry['type'] = 'org';
-      $tree_entry['text'] = $dept;
-      $tree_entry['parent'] = $parentvalue;
+      $tree_entry['text'] = htmlentities($dept, ENT_QUOTES);
+      $tree_entry['parent'] = htmlentities($parentvalue, ENT_QUOTES);
       $tree_entries[] = $tree_entry;
       if (count($tree_entries) < 10000) {
         flvc_ir_custom_get_children_for_tree($dept, $searchfield, $displayfield, $tree_entries);
@@ -150,10 +150,10 @@ function flvc_ir_custom_get_solr_tree_view(AbstractObject $object, $searchfield,
   $form = array();
   $tree_entries = array();
   $tree_entry = array();
-  $tree_entry['id'] = $object->label;
+  $tree_entry['id'] = htmlentities($object->label, ENT_QUOTES);
   $tree_entry['pid'] = $object->id;
   $tree_entry['type'] = 'org';
-  $tree_entry['text'] = $object->label;
+  $tree_entry['text'] = htmlentities($object->label, ENT_QUOTES);
   $tree_entry['parent'] = '#';
   $tree_entries[] = $tree_entry;
   flvc_ir_custom_get_children_for_tree($object->label, $searchfield, $displayfield, $tree_entries);
