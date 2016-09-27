@@ -370,10 +370,10 @@ $handler->display->display_options['arguments']['MADS_organization_ms']['summary
 $handler->display->display_options['arguments']['MADS_organization_ms']['summary']['format'] = 'default_summary';
 $handler->display->display_options['arguments']['MADS_organization_ms']['summary_options']['items_per_page'] = '25';
 /* Filter criterion: Islandora Solr: MADS_u1_mt */
-$handler->display->display_options['filters']['MADS_u1_mt']['id'] = 'MADS_u1_mt';
-$handler->display->display_options['filters']['MADS_u1_mt']['table'] = 'islandora_solr';
-$handler->display->display_options['filters']['MADS_u1_mt']['field'] = 'MADS_u1_mt';
-$handler->display->display_options['filters']['MADS_u1_mt']['value'] = '*';
+$handler->display->display_options['filters']['MADS_organization_ms']['id'] = 'MADS_organization_ms';
+$handler->display->display_options['filters']['MADS_organization_ms']['table'] = 'islandora_solr';
+$handler->display->display_options['filters']['MADS_organization_ms']['field'] = 'MADS_organization_ms';
+$handler->display->display_options['filters']['MADS_organization_ms']['value'] = '*';
 
 /* Display: Page */
 $handler = $view->new_display('page', 'Page', 'page');
