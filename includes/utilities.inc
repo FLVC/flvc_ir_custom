@@ -162,9 +162,8 @@ function flvc_ir_custom_get_solr_tree_view(AbstractObject $object, $searchfield,
   $tree_entry['parent'] = '#';
   $tree_entries[] = $tree_entry;
   flvc_ir_custom_get_children_for_tree($object->label, $searchfield, $displayfield, $tree_entries);
-//  if (!empty($tree_entries)) {
   // only display tree if more than one entry
-  if (count($tree_entries) > 1) {
+  //if (count($tree_entries) > 1) {
     $tree_settings = array(
       'data' => $tree_entries,
       'types' => array(
@@ -218,7 +217,7 @@ function flvc_ir_custom_get_solr_tree_view(AbstractObject $object, $searchfield,
       '#type' => 'item',
       '#markup' => t('Left click to navigate to the object.'),
     );
-  }
+  //}
   return $form;
 }
 
