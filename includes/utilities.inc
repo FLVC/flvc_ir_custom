@@ -117,7 +117,7 @@ function flvc_ir_custom_strip_special_chars($string) {
 }
 
 function flvc_ir_custom_get_children_for_tree($parentvalue, $searchfield, $displayfield, &$tree_entries) {
-  module_load_include('inc', 'islandora_solr_search', 'includes/utilities');
+  module_load_include('inc', 'islandora_solr', 'includes/utilities');
 
   // search for children of parentvalue
   $query_processor = new IslandoraSolrQueryProcessor();
@@ -222,7 +222,7 @@ function flvc_ir_custom_get_solr_tree_view(AbstractObject $object, $searchfield,
 }
 
 function flvc_ir_custom_get_parent_organizations_for_org($organization, &$orglist) {
-  module_load_include('inc', 'islandora_solr_search', 'includes/utilities');
+  module_load_include('inc', 'islandora_solr', 'includes/utilities');
 
   // search for PID of organization
   $query_processor = new IslandoraSolrQueryProcessor();
@@ -333,7 +333,7 @@ function flvc_ir_custom_get_parent_organizations(FedoraObject $object, $datastre
   $orglist_dedup = array_unique($orglist);
   foreach ($orglist_dedup as $org) {
     if (!empty($org)) {
-      $output .= '<result><organization>' . $org . '</organization></result>';
+      $output .= '<result><organization>' . htmlspecialchars($org) . '</organization></result>';
     }
   }
   $output .= '</results></sparql>';
