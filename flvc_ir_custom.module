@@ -33,6 +33,18 @@ function flvc_ir_custom_menu() {
     'file' => 'includes/utilities.inc',
     'access callback' => TRUE,
   );
+  $items['flvc_ir_get_parent_organizations_from_scholar/%'] = array (
+    'page callback' => 'flvc_ir_custom_get_parent_organizations_from_scholar',
+    'page arguments' => array(1),
+    'file' => 'includes/utilities.inc',
+    'access callback' => TRUE,
+  );
+  $items['flvc_ir_get_parent_organizations_from_org/%'] = array (
+    'page callback' => 'flvc_ir_custom_get_parent_organizations_from_org',
+    'page arguments' => array(1),
+    'file' => 'includes/utilities.inc',
+    'access callback' => TRUE,
+  );
 /*
   $items['dept_tree'] = array (
     'page callback' => 'flvc_ir_custom_display_full_organization_tree',

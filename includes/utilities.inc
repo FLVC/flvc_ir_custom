@@ -342,6 +342,39 @@ function flvc_ir_custom_get_parent_organizations(FedoraObject $object, $datastre
   drupal_exit();
 }
 
+function flvc_ir_custom_get_parent_organizations_from_scholar($scholar) {
+  $orglist = array();
+  flvc_ir_custom_get_organizations_for_person(urldecode($scholar), $orglist);
+  $output = '<sparql xmlns="http://www.w3.org/2001/sw/DataAccess/rf1/result"><results>';
+  $orglist_dedup = array_unique($orglist);
+  foreach ($orglist_dedup as $org) {
+    if (!empty($org)) {
+      $output .= '<result><organization>' . htmlspecialchars($org) . '</organization></result>';
+    }
+  }
+  $output .= '</results></sparql>';
+  print $output;
+
+  drupal_exit();
+}
+
+function flvc_ir_custom_get_parent_organizations_from_org($organization) {
+  $orglist = array();
+  $orglist[] = urldecode($organization);
+  flvc_ir_custom_get_parent_organizations_for_org(urldecode($organization), $orglist);
+  $output = '<sparql xmlns="http://www.w3.org/2001/sw/DataAccess/rf1/result"><results>';
+  $orglist_dedup = array_unique($orglist);
+  foreach ($orglist_dedup as $org) {
+    if (!empty($org)) {
+      $output .= '<result><organization>' . htmlspecialchars($org) . '</organization></result>';
+    }
+  }
+  $output .= '</results></sparql>';
+  print $output;
+
+  drupal_exit();
+}
+
 function flvc_ir_custom_get_solr_filters() {
 
   $filter_params = array();
