@@ -631,13 +631,13 @@ $view->disabled = FALSE; /* Edit this to true to make a default view disabled in
 /* Display: Master */
 $handler = $view->new_display('default', 'Master', 'default');
 $handler->display->display_options['title'] = 'other_scholars_in_dept';
-$handler->display->display_options['use_more_always'] = FALSE;
+$handler->display->display_options['use_more_always'] = TRUE;
 $handler->display->display_options['access']['type'] = 'none';
 $handler->display->display_options['cache']['type'] = 'none';
 $handler->display->display_options['query']['type'] = 'views_query';
 $handler->display->display_options['exposed_form']['type'] = 'basic';
-$handler->display->display_options['pager']['type'] = 'some';
-$handler->display->display_options['pager']['options']['items_per_page'] = '5';
+$handler->display->display_options['pager']['type'] = 'none';
+$handler->display->display_options['pager']['options']['offset'] = '0';
 $handler->display->display_options['style_plugin'] = 'default';
 $handler->display->display_options['row_plugin'] = 'fields';
 /* Field: Islandora Solr: MADS_title_ms */
