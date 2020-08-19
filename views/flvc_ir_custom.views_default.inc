@@ -481,7 +481,7 @@ $handler->display->display_options['fields']['PID']['id'] = 'PID';
 $handler->display->display_options['fields']['PID']['table'] = 'islandora_solr';
 $handler->display->display_options['fields']['PID']['field'] = 'PID';
 $handler->display->display_options['fields']['PID']['alter']['alter_text'] = TRUE;
-$handler->display->display_options['fields']['PID']['alter']['text'] = '<a href="/islandora/object/[PID]"><img class="lazyload" data-src="/islandora/object/[PID]/datastream/TN/view" src="/islandora/object/[PID]/datastream/TN/view" height="50" width="50"></a>';
+$handler->display->display_options['fields']['PID']['alter']['text'] = '<a href="/islandora/object/[PID]"><img class="lazyload" data-src="/islandora/object/[PID]/datastream/TN/view" height="50" width="50"></a>';
 $handler->display->display_options['fields']['PID']['link_to_object'] = 0;
 /* Field: Islandora Solr: MADS_fullname_ms */
 $handler->display->display_options['fields']['MADS_fullname_ms']['id'] = 'MADS_fullname_ms';
